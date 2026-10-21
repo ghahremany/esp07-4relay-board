@@ -1,0 +1,480 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1720" height="1320" viewBox="0 0 1720 1320" font-family="Tahoma, Arial, sans-serif">
+<style>
+  .sec{fill:#fdfdfd;stroke:#b9bfc9;stroke-width:1.2;stroke-dasharray:8 4;rx:10}
+  .w{stroke:#1a7a33;stroke-width:1.6;fill:none}
+  .wp{stroke:#c0392b;stroke-width:1.6;fill:none}
+  .sym{stroke:#2b2f36;stroke-width:1.5;fill:none}
+  .symf{fill:#2b2f36;stroke:none}
+  .jct{fill:#1a7a33;stroke:none}
+  .t9{font-size:9.5px;fill:#333}
+  .t10{font-size:10.5px;fill:#333}
+  .t11{font-size:11.5px;fill:#222}
+  .tb{font-weight:bold}
+  .secT{font-size:13.5px;font-weight:bold;fill:#1a3c5e}
+  .pin{font-size:9.5px;fill:#1a7a33}
+  .box{fill:#ffffff;stroke:#2b2f36;stroke-width:1.5}
+  .note{font-size:10.5px;fill:#555}
+  .rfB{fill:#eef9f0;stroke:#1e8c3a;stroke-width:1.5}
+</style>
+
+<defs>
+  <g id="resH" class="sym"><path d="M-18 0 H-12 L-10 -6 L-6 6 L-2 -6 L2 6 L6 -6 L10 6 L12 0 H18"/></g>
+  <g id="capV"><path class="sym" d="M0 -12 V-4 M-8 -4 H8 M-8 2 H8 M0 2 V12"/><path class="symf" d="M-8 1 H8 V2 H-8 Z"/></g>
+  <g id="dioH"><path class="sym" d="M-20 0 H-8 M8 0 H20 M8 -7 V7"/><path class="symf" d="M-8 -6 L-8 6 L8 0 Z"/></g>
+  <g id="dioV"><g transform="rotate(-90)"><path class="sym" d="M-20 0 H-8 M8 0 H20 M8 -7 V7"/><path class="symf" d="M-8 -6 L-8 6 L8 0 Z"/></g></g>
+  <g id="ledRV"><g transform="rotate(-90)"><path style="stroke:#c0392b;stroke-width:1.5;fill:none" d="M-20 0 H-8 M8 0 H20 M8 -7 V7"/><path style="fill:#c0392b;stroke:none" d="M-8 -6 L-8 6 L8 0 Z"/><path style="stroke:#c0392b;stroke-width:1.2;fill:none" d="M2 -8 L8 -14 M6 -8 L12 -14"/></g></g>
+  <g id="ledGV"><g transform="rotate(-90)"><path style="stroke:#1e8c3a;stroke-width:1.5;fill:none" d="M-20 0 H-8 M8 0 H20 M8 -7 V7"/><path style="fill:#1e8c3a;stroke:none" d="M-8 -6 L-8 6 L8 0 Z"/><path style="stroke:#1e8c3a;stroke-width:1.2;fill:none" d="M2 -8 L8 -14 M6 -8 L12 -14"/></g></g>
+  <g id="npn"><circle r="13" class="sym" fill="#fff"/><path class="sym" d="M-18 0 H-4 M-4 -8 V8 M-4 -6 L9 -12 M9 -12 V-22 M-4 6 L9 12 M9 12 V22"/><path class="symf" d="M6.2 9.4 L11.6 14.6 L4.6 14 L6.2 9.4 Z"/></g>
+  <g id="nmos"><circle r="13" class="sym" fill="#fff"/><path class="sym" d="M-20 0 H-8 M-7 -8 V8 M-3 -8 V-2 M-3 2 V8 M-3 -5 L10 -11 M10 -11 V-20 M-3 5 L10 11 M10 11 V20 M1 0 L6 0 M3.5 -2 L6 0 L3.5 2"/></g>
+  <g id="btnV"><path class="sym" d="M0 -18 V-10 M0 10 V18 M-8 -10 H-2 M2 -10 H8 M0 -10 V-6"/><circle cx="-5" cy="-10" r="1.8" class="symf"/><circle cx="5" cy="-10" r="1.8" class="symf"/></g>
+  <g id="gndS"><path class="sym" d="M0 -10 V0 M-9 0 H9 M-5 4 H5 M-1.5 8 H1.5"/></g>
+  <g id="ant"><path class="sym" d="M0 0 q4 -10 8 0 q4 10 8 0"/><path class="sym" d="M16 0 l8 -14 M24 -14 m0 0 l0 0"/><circle cx="24" cy="-16" r="1.6" class="symf"/></g>
+</defs>
+
+<!-- ================= HEADER ================= -->
+<text x="60" y="36" font-size="19" font-weight="bold" fill="#12324f">شماتیک V2 — برد ۴ رله ESP-07 + لینک رادیویی RF433 (گیرنده و فرستنده)</text>
+<text x="60" y="58" class="note">تغییرات نسبت به V1 فقط در «بخش E» است؛ بقیه مدار عیناً همان بازسازی برد اصلی است تا سازگاری فریمور و شکل‌فاکتور حفظ شود.</text>
+
+<!-- ================= SECTION A : POWER ================= -->
+<rect x="60" y="80" width="420" height="310" class="sec"/>
+<text x="76" y="106" class="secT">A | تغذیه — Power Supply</text>
+
+<text x="80" y="140" class="t10">جک ورودی 12VDC ≥1A — پلاریته مرکز مثبت</text>
+<rect x="80" y="150" width="84" height="50" class="box"/>
+<text x="122" y="172" class="t10 tb" text-anchor="middle">J1</text>
+<text x="122" y="188" class="t9" text-anchor="middle">DC 5.5×2.1</text>
+<path class="w" d="M164 172 H184"/>
+<use href="#dioH" x="204" y="172"/>
+<text x="168" y="162" class="t9">D1 — SS14 (محافظ پلاریته)</text>
+<path class="w" d="M224 172 H246"/>
+<use href="#capV" x="246" y="184"/>
+<circle cx="246" cy="172" r="2.6" class="jct"/>
+<path class="w" d="M246 196 V202"/>
+<use href="#gndS" x="246" y="212"/>
+<text x="216" y="232" class="t9">C1 1000µF/16V</text>
+<path class="w" d="M246 172 H262"/>
+<rect x="262" y="130" width="120" height="80" class="box"/>
+<text x="270" y="148" class="t10 tb">U1 — باک 5V (پشت برد)</text>
+<text x="270" y="164" class="t9">LM2576-5 — پکیج D2PAK</text>
+<text x="270" y="180" class="t9">خروجی 5V تثبیت‌شده</text>
+<text x="270" y="196" class="t9">L: 100µH (مارک 101)</text>
+<path class="w" d="M382 170 H390"/>
+<path class="sym" d="M390 170 a6 6 0 0 1 12 0 a6 6 0 0 1 12 0 a6 6 0 0 1 12 0"/>
+<text x="390" y="158" class="t9">L1 — 100µH</text>
+<path class="w" d="M426 170 H438"/>
+<use href="#dioV" x="390" y="188"/>
+<path class="w" d="M390 200 V206"/>
+<use href="#gndS" x="390" y="216"/>
+<text x="366" y="240" class="t9">D2 SS34</text>
+<circle cx="390" cy="170" r="2.6" class="jct"/>
+<use href="#capV" x="438" y="182"/>
+<circle cx="438" cy="170" r="2.6" class="jct"/>
+<path class="w" d="M438 194 V200"/>
+<use href="#gndS" x="438" y="210"/>
+<text x="414" y="226" class="t9">C2 1000µF/16V</text>
+<rect x="406" y="126" width="44" height="20" rx="10" fill="#c0392b"/>
+<text x="428" y="140" font-size="10" fill="#fff" text-anchor="middle" font-weight="bold">+5V</text>
+<path class="wp" d="M428 146 V170"/>
+<circle cx="428" cy="170" r="2.6" class="jct"/>
+
+<text x="80" y="258" class="t10 tb">رگولاتور منطق 3.3V</text>
+<rect x="64" y="272" width="44" height="20" rx="10" fill="#c0392b"/>
+<text x="86" y="286" font-size="10" fill="#fff" text-anchor="middle" font-weight="bold">+5V</text>
+<path class="w" d="M108 282 H200"/>
+<use href="#capV" x="140" y="294"/>
+<circle cx="140" cy="282" r="2.6" class="jct"/>
+<path class="w" d="M140 306 V312"/>
+<use href="#gndS" x="140" y="322"/>
+<text x="150" y="302" class="t9">C3 — 10µF</text>
+<rect x="200" y="262" width="130" height="64" class="box"/>
+<text x="208" y="284" class="t10 tb">U2 — AMS1117-3.3</text>
+<text x="208" y="300" class="t9">SOT-223 — خروجی 3.3V / 800mA</text>
+<path class="w" d="M330 294 H334"/>
+<rect x="334" y="284" width="44" height="20" rx="10" fill="#d35400"/>
+<text x="356" y="298" font-size="10" fill="#fff" text-anchor="middle" font-weight="bold">3V3</text>
+<use href="#capV" x="300" y="306"/>
+<circle cx="300" cy="294" r="2.6" class="jct"/>
+<path class="w" d="M300 294 H330 M300 318 V324"/>
+<use href="#gndS" x="300" y="334"/>
+<text x="310" y="316" class="t9">C4 — 10µF‖100nF</text>
+<path class="w" d="M378 294 H404"/>
+<use href="#resH" x="422" y="294"/>
+<text x="404" y="284" class="t9">R3 — 1k</text>
+<path class="w" d="M440 294 H452"/>
+<use href="#ledRV" x="452" y="306"/>
+<path class="w" d="M452 318 V322"/>
+<use href="#gndS" x="452" y="332"/>
+<text x="460" y="318" class="t9">LED PWR</text>
+
+<!-- ================= SECTION B : USB-UART ================= -->
+<rect x="60" y="420" width="420" height="330" class="sec"/>
+<text x="76" y="446" class="secT">B | USB↔UART و پروگرام — CH340C</text>
+
+<text x="80" y="472" class="t10">J2 — Micro USB (پروگرام + تغذیه منطق)</text>
+<rect x="80" y="482" width="96" height="64" class="box"/>
+<text x="128" y="506" class="t10 tb" text-anchor="middle">J2</text>
+<text x="128" y="522" class="t9" text-anchor="middle">micro USB</text>
+<text x="128" y="536" class="t9" text-anchor="middle">VBUS·D−·D+·GND</text>
+
+<path class="w" d="M176 494 H186"/>
+<rect x="186" y="484" width="44" height="20" rx="10" fill="#c0392b"/>
+<text x="208" y="498" font-size="10" fill="#fff" text-anchor="middle" font-weight="bold">+5V</text>
+<text x="236" y="498" class="t9">از طریق D7 — SS12</text>
+
+<path class="w" d="M176 518 H220 M176 534 H220"/>
+<text x="182" y="514" class="t9">D−</text>
+<text x="182" y="548" class="t9">D+</text>
+<rect x="220" y="482" width="150" height="110" class="box"/>
+<text x="228" y="504" class="t10 tb">U3 — CH340G</text>
+<text x="228" y="520" class="t9">USB ↔ UART (C7: 100nF روی VCC)</text>
+<text x="228" y="536" class="t9">TNOW/DTR/RTS → ریست خودکار</text>
+
+<rect x="376" y="488" width="96" height="20" rx="6" fill="#2c3e50"/>
+<text x="424" y="502" font-size="9.5" fill="#fff" text-anchor="middle">TXD → ESP-RXD</text>
+<path class="w" d="M370 498 H376"/>
+<rect x="376" y="512" width="96" height="20" rx="6" fill="#2c3e50"/>
+<text x="424" y="526" font-size="9.5" fill="#fff" text-anchor="middle">RXD ← ESP-TXD</text>
+<path class="w" d="M370 522 H376"/>
+
+<path class="w" d="M370 546 H386 V566"/>
+<text x="228" y="556" class="t9">DTR</text>
+<use href="#resH" transform="translate(386 584) rotate(90)"/>
+<text x="398" y="590" class="t9">R17 10k</text>
+<path class="w" d="M386 602 V606 H394"/>
+<use href="#npn" x="412" y="606"/>
+<path class="w" d="M412 584 V556"/>
+<rect x="398" y="524" width="42" height="20" rx="6" fill="#2c3e50"/>
+<text x="419" y="538" font-size="9.5" fill="#fff" text-anchor="middle">RST</text>
+<path class="w" d="M412 628 V634"/>
+<use href="#gndS" x="412" y="644"/>
+<text x="428" y="620" class="t9">Q5 BC817</text>
+
+<path class="w" d="M370 562 H356 V690 H368"/>
+<text x="228" y="572" class="t9">RTS</text>
+<use href="#resH" transform="translate(382 702) rotate(90)"/>
+<path class="w" d="M368 690 H374"/>
+<text x="344" y="730" class="t9">R18 10k</text>
+<use href="#npn" x="400" y="708"/>
+<path class="w" d="M382 684 V690 M400 686 V668"/>
+<rect x="388" y="648" width="52" height="20" rx="6" fill="#2c3e50"/>
+<text x="414" y="662" font-size="9.5" fill="#fff" text-anchor="middle">GPIO0</text>
+<path class="w" d="M400 730 V736"/>
+<use href="#gndS" x="400" y="746"/>
+<text x="418" y="726" class="t9">Q6 BC817</text>
+<rect x="90" y="604" width="200" height="70" class="box" fill="#fbfcfd"/>
+<text x="98" y="622" class="t9 tb">کریستال CH340G (تشخیص از عکس سازنده)</text>
+<path class="sym" d="M106 646 H118 M134 646 H150"/>
+<rect x="118" y="632" width="16" height="28" class="sym"/>
+<path class="sym" d="M124 638 V654 M128 638 V654"/>
+<text x="156" y="644" class="t9">X1 — 12MHz</text>
+<text x="156" y="660" class="t9">C8, C9 — 22pF → GND</text>
+<path class="w" d="M150 646 H170 V566 H220"/>
+<text x="76" y="742" class="note">مدار ریست/فلش خودکار به سبک NodeMCU — DTR→RST ، RTS→GPIO0</text>
+
+<!-- ================= SECTION C : ESP-07 ================= -->
+<rect x="500" y="80" width="540" height="670" class="sec"/>
+<text x="516" y="106" class="secT">C | ماژول ESP-07 و مدار بوت</text>
+<text x="516" y="124" class="note">در V2 پایه‌های GPIO14 و GPIO16 به لینک RF433 اختصاص یافته‌اند (GPIO4/5/12/13 = رله‌ها — سیلک برد)</text>
+
+<rect x="640" y="180" width="230" height="380" class="box" fill="#f4faf5"/>
+<text x="755" y="200" class="t11 tb" text-anchor="middle">U4 — ESP-07</text>
+<text x="755" y="216" class="t9" text-anchor="middle">ESP8266EX + فلش + آنتن u.FL</text>
+
+<text x="646" y="238" class="pin">3V3</text>
+<text x="646" y="262" class="pin">EN (CH_PD)</text>
+<text x="646" y="286" class="pin">RST</text>
+<text x="646" y="310" class="pin">GPIO0</text>
+<text x="646" y="334" class="pin">GPIO2</text>
+<text x="646" y="358" class="pin">GPIO4</text>
+<text x="646" y="382" class="pin">GPIO5</text>
+<text x="646" y="406" class="pin">ADC (TOUT)</text>
+<text x="646" y="430" class="pin">GND</text>
+
+<path class="w" d="M640 234 H614"/>
+<rect x="566" y="224" width="44" height="20" rx="10" fill="#d35400"/>
+<text x="588" y="238" font-size="9" fill="#fff" text-anchor="middle" font-weight="bold">3V3</text>
+
+<path class="w" d="M640 258 H614 H601"/>
+<use href="#resH" x="583" y="258"/>
+<text x="594" y="250" class="t9">R13 10k</text>
+<path class="w" d="M565 258 H566"/>
+<rect x="518" y="248" width="44" height="20" rx="10" fill="#d35400"/>
+<text x="540" y="262" font-size="9" fill="#fff" text-anchor="middle" font-weight="bold">3V3</text>
+
+<path class="w" d="M640 282 H616"/>
+<use href="#resH" x="583" y="282"/>
+<text x="594" y="274" class="t9">R14 10k</text>
+<path class="w" d="M565 282 H566"/>
+<rect x="518" y="272" width="44" height="20" rx="10" fill="#d35400"/>
+<text x="540" y="286" font-size="9" fill="#fff" text-anchor="middle" font-weight="bold">3V3</text>
+<circle cx="610" cy="282" r="2.6" class="jct"/>
+<path class="w" d="M610 282 V322"/>
+<use href="#btnV" x="610" y="340"/>
+<path class="w" d="M610 358 V364"/>
+<use href="#gndS" x="610" y="374"/>
+<text x="618" y="350" class="t9">SW1 · RESET</text>
+
+<path class="w" d="M640 306 H606"/>
+<use href="#resH" x="576" y="306"/>
+<text x="588" y="298" class="t9">R15 10k</text>
+<path class="w" d="M558 306 H556"/>
+<rect x="510" y="296" width="44" height="20" rx="10" fill="#d35400"/>
+<text x="532" y="310" font-size="9" fill="#fff" text-anchor="middle" font-weight="bold">3V3</text>
+<circle cx="606" cy="306" r="2.6" class="jct"/>
+<path class="w" d="M606 306 V366"/>
+<use href="#btnV" x="606" y="384"/>
+<path class="w" d="M606 402 V408"/>
+<use href="#gndS" x="606" y="418"/>
+<text x="614" y="398" class="t9">SW2 · FLASH</text>
+
+<path class="w" d="M640 330 H612"/>
+<use href="#resH" x="584" y="330"/>
+<text x="596" y="322" class="t9">R16 10k</text>
+<path class="w" d="M566 330 H562"/>
+<rect x="514" y="320" width="44" height="20" rx="10" fill="#d35400"/>
+<text x="536" y="334" font-size="9" fill="#fff" text-anchor="middle" font-weight="bold">3V3</text>
+
+<path class="w" d="M640 354 H614"/>
+<rect x="514" y="344" width="96" height="20" rx="6" fill="#b9770e"/>
+<text x="562" y="358" font-size="9" fill="#fff" text-anchor="middle" font-weight="bold">RL1 → کانال ۱</text>
+<path class="w" d="M640 378 H614"/>
+<rect x="514" y="368" width="96" height="20" rx="6" fill="#b9770e"/>
+<text x="562" y="382" font-size="9" fill="#fff" text-anchor="middle" font-weight="bold">RL2 → کانال ۲</text>
+<path class="w" d="M640 402 H614"/>
+<rect x="514" y="392" width="96" height="20" rx="6" fill="#2c3e50"/>
+<text x="562" y="406" font-size="9" fill="#fff" text-anchor="middle">A0 — هدر</text>
+<path class="w" d="M640 426 H616 H606"/>
+<use href="#gndS" x="606" y="436"/>
+<text x="516" y="462" class="note">C5 100nF + C6 10µF نزدیک VCC ماژول</text>
+
+<text x="864" y="238" class="pin" text-anchor="end">TXD</text>
+<text x="864" y="262" class="pin" text-anchor="end">RXD</text>
+<text x="864" y="286" class="pin" text-anchor="end">GPIO12</text>
+<text x="864" y="310" class="pin" text-anchor="end">GPIO13</text>
+<text x="864" y="334" class="pin" text-anchor="end">GPIO14</text>
+<text x="864" y="358" class="pin" text-anchor="end">GPIO16</text>
+<text x="864" y="382" class="pin" text-anchor="end">GPIO15</text>
+<text x="864" y="406" class="pin" text-anchor="end">GND</text>
+
+<path class="w" d="M870 234 H900"/>
+<rect x="902" y="224" width="118" height="20" rx="6" fill="#2c3e50"/>
+<text x="961" y="238" font-size="9" fill="#fff" text-anchor="middle">TXD → RXD(U3)</text>
+<path class="w" d="M870 258 H900"/>
+<rect x="902" y="248" width="118" height="20" rx="6" fill="#2c3e50"/>
+<text x="961" y="262" font-size="9" fill="#fff" text-anchor="middle">RXD ← TXD(U3)</text>
+<path class="w" d="M870 282 H900"/>
+<rect x="902" y="272" width="118" height="20" rx="6" fill="#b9770e"/>
+<text x="961" y="286" font-size="9.5" fill="#fff" text-anchor="middle" font-weight="bold">RL3 ← GPIO12</text>
+<path class="w" d="M870 306 H900"/>
+<rect x="902" y="296" width="118" height="20" rx="6" fill="#b9770e"/>
+<text x="961" y="310" font-size="9.5" fill="#fff" text-anchor="middle" font-weight="bold">RL4 ← GPIO13</text>
+<path class="w" d="M870 330 H900"/>
+<rect x="902" y="320" width="118" height="20" rx="6" fill="#1e6e3a"/>
+<text x="961" y="334" font-size="9.5" fill="#fff" text-anchor="middle" font-weight="bold">RF_RX ← GPIO14</text>
+<path class="w" d="M870 354 H900"/>
+<rect x="902" y="344" width="118" height="20" rx="6" fill="#1e6e3a"/>
+<text x="961" y="358" font-size="9.5" fill="#fff" text-anchor="middle" font-weight="bold">RF_TX → GPIO16</text>
+<path class="w" d="M870 378 H930"/>
+<use href="#resH" transform="translate(930 396) rotate(90)"/>
+<text x="942" y="396" class="t9">R4 10k</text>
+<path class="w" d="M930 414 V420"/>
+<use href="#gndS" x="930" y="430"/>
+<path class="w" d="M870 402 H918"/>
+<use href="#gndS" x="918" y="412"/>
+
+<rect x="520" y="620" width="240" height="100" class="box" fill="#fbfcfd"/>
+<text x="528" y="640" class="t10 tb">H1 — هدر سمت چپ (بریک‌اوت)</text>
+<text x="528" y="660" class="t9">3V3 · GND · EN · RST · ADC · GPIO0/2</text>
+<rect x="780" y="620" width="240" height="100" class="box" fill="#fbfcfd"/>
+<text x="788" y="640" class="t10 tb">H2 — هدر سمت راست (بریک‌اوت)</text>
+<text x="788" y="660" class="t9">TXD · RXD · GPIO12/13/14/15/16 · 3V3 · GND</text>
+
+<!-- ================= SECTION D : RELAY DRIVERS ================= -->
+<rect x="1070" y="80" width="610" height="880" class="sec"/>
+<text x="1086" y="106" class="secT">D | درایور رله ×۴ — بدون تغییر نسبت به V1</text>
+<text x="1086" y="124" class="note">بوبین رله 12V — ظرفیت رله: 7A/250VAC (NT73-1C-12 یا SRD-12VDC-SL-C)</text>
+
+<g>
+<rect x="1086" y="150" width="120" height="20" rx="6" fill="#b9770e"/>
+<text x="1146" y="164" font-size="9.5" fill="#fff" text-anchor="middle" font-weight="bold">RL1 ← GPIO4</text>
+<path class="w" d="M1206 160 H1240"/><use href="#resH" x="1258" y="160"/><text x="1246" y="148" class="t9">R5 1k</text>
+<path class="w" d="M1276 160 H1294"/><use href="#npn" x="1312" y="160"/><text x="1332" y="178" class="t9">Q1 BC817</text>
+<path class="w" d="M1312 182 V188"/><use href="#gndS" x="1312" y="198"/>
+<path class="w" d="M1312 138 V120 H1360"/>
+<rect x="1360" y="82" width="26" height="38" class="box"/><text x="1373" y="103" class="t9 tb" text-anchor="middle">K1</text>
+<path class="w" d="M1373 82 V74"/>
+<rect x="1352" y="54" width="44" height="20" rx="10" fill="#e67e22"/><text x="1374" y="68" font-size="9.5" fill="#fff" text-anchor="middle" font-weight="bold">+12V</text>
+<path class="w" d="M1386 74 H1450"/><circle cx="1373" cy="74" r="2.6" class="jct"/>
+<use href="#dioV" x="1412" y="99"/><path class="w" d="M1412 74 V89 M1412 109 V120 H1386"/><circle cx="1412" cy="74" r="2.6" class="jct"/>
+<text x="1420" y="104" class="t9">D3</text><text x="1420" y="114" class="t9">1N4007</text>
+<use href="#resH" transform="translate(1450 90) rotate(90)"/><text x="1462" y="94" class="t9">R9 1k</text>
+<use href="#ledGV" x="1450" y="120"/><path class="w" d="M1450 132 V120 H1360"/>
+<circle cx="1450" cy="74" r="2.6" class="jct"/><circle cx="1450" cy="120" r="2.6" class="jct"/><text x="1462" y="124" class="t9">LED1</text>
+<circle cx="1500" cy="96" r="2.6" class="symf"/><circle cx="1500" cy="132" r="2.6" class="symf"/><circle cx="1500" cy="168" r="2.6" class="symf"/>
+<path class="sym" d="M1488 132 L1497 164"/>
+<path class="w" d="M1500 96 H1540 M1500 132 H1540 M1500 168 H1540"/>
+<rect x="1540" y="82" width="128" height="104" class="box" fill="#f3f7ff"/>
+<text x="1604" y="100" class="t9 tb" text-anchor="middle">TB1 — ترمینال ۳×۵mm</text>
+<text x="1550" y="100" class="t9">NO — باز</text><text x="1550" y="136" class="t9">COM — مشترک</text><text x="1550" y="172" class="t9">NC — بسته</text>
+</g>
+
+<g>
+<rect x="1086" y="326" width="120" height="20" rx="6" fill="#b9770e"/>
+<text x="1146" y="340" font-size="9.5" fill="#fff" text-anchor="middle" font-weight="bold">RL2 ← GPIO5</text>
+<path class="w" d="M1206 336 H1240"/><use href="#resH" x="1258" y="336"/><text x="1246" y="324" class="t9">R6 1k</text>
+<path class="w" d="M1276 336 H1294"/><use href="#npn" x="1312" y="336"/><text x="1332" y="354" class="t9">Q2 BC817</text>
+<path class="w" d="M1312 358 V364"/><use href="#gndS" x="1312" y="374"/>
+<path class="w" d="M1312 314 V296 H1360"/>
+<rect x="1360" y="258" width="26" height="38" class="box"/><text x="1373" y="279" class="t9 tb" text-anchor="middle">K2</text>
+<path class="w" d="M1373 258 V250"/>
+<rect x="1352" y="230" width="44" height="20" rx="10" fill="#e67e22"/><text x="1374" y="244" font-size="9.5" fill="#fff" text-anchor="middle" font-weight="bold">+12V</text>
+<path class="w" d="M1386 250 H1450"/><circle cx="1373" cy="250" r="2.6" class="jct"/>
+<use href="#dioV" x="1412" y="275"/><path class="w" d="M1412 250 V265 M1412 285 V296 H1386"/><circle cx="1412" cy="250" r="2.6" class="jct"/>
+<text x="1420" y="280" class="t9">D4 1N4007</text>
+<use href="#resH" transform="translate(1450 266) rotate(90)"/><text x="1462" y="270" class="t9">R10 1k</text>
+<use href="#ledGV" x="1450" y="296"/><path class="w" d="M1450 308 V296 H1360"/><text x="1462" y="300" class="t9">LED2</text>
+<circle cx="1500" cy="272" r="2.6" class="symf"/><circle cx="1500" cy="308" r="2.6" class="symf"/><circle cx="1500" cy="344" r="2.6" class="symf"/>
+<path class="sym" d="M1488 308 L1497 340"/>
+<path class="w" d="M1500 272 H1540 M1500 308 H1540 M1500 344 H1540"/>
+<rect x="1540" y="258" width="128" height="104" class="box" fill="#f3f7ff"/>
+<text x="1604" y="276" class="t9 tb" text-anchor="middle">TB2 — ترمینال ۳×۵mm</text>
+<text x="1550" y="276" class="t9">NO — باز</text><text x="1550" y="312" class="t9">COM — مشترک</text><text x="1550" y="348" class="t9">NC — بسته</text>
+</g>
+
+<g>
+<rect x="1086" y="502" width="120" height="20" rx="6" fill="#b9770e"/>
+<text x="1146" y="516" font-size="9.5" fill="#fff" text-anchor="middle" font-weight="bold">RL3 ← GPIO12</text>
+<path class="w" d="M1206 512 H1240"/><use href="#resH" x="1258" y="512"/><text x="1246" y="500" class="t9">R7 1k</text>
+<path class="w" d="M1276 512 H1294"/><use href="#npn" x="1312" y="512"/><text x="1332" y="530" class="t9">Q3 BC817</text>
+<path class="w" d="M1312 534 V540"/><use href="#gndS" x="1312" y="550"/>
+<path class="w" d="M1312 490 V472 H1360"/>
+<rect x="1360" y="434" width="26" height="38" class="box"/><text x="1373" y="455" class="t9 tb" text-anchor="middle">K3</text>
+<path class="w" d="M1373 434 V426"/>
+<rect x="1352" y="406" width="44" height="20" rx="10" fill="#e67e22"/><text x="1375" y="420" font-size="9.5" fill="#fff" text-anchor="middle" font-weight="bold">+12V</text>
+<path class="w" d="M1386 426 H1450"/><circle cx="1373" cy="426" r="2.6" class="jct"/>
+<use href="#dioV" x="1412" y="451"/><path class="w" d="M1412 426 V441 M1412 461 V472 H1386"/><circle cx="1412" cy="426" r="2.6" class="jct"/>
+<text x="1420" y="456" class="t9">D5 1N4007</text>
+<use href="#resH" transform="translate(1450 442) rotate(90)"/><text x="1462" y="446" class="t9">R11 1k</text>
+<use href="#ledGV" x="1450" y="472"/><path class="w" d="M1450 484 V472 H1360"/><text x="1462" y="476" class="t9">LED3</text>
+<circle cx="1500" cy="448" r="2.6" class="symf"/><circle cx="1500" cy="484" r="2.6" class="symf"/><circle cx="1500" cy="520" r="2.6" class="symf"/>
+<path class="sym" d="M1488 484 L1497 516"/>
+<path class="w" d="M1500 448 H1540 M1500 484 H1540 M1500 520 H1540"/>
+<rect x="1540" y="434" width="128" height="104" class="box" fill="#f3f7ff"/>
+<text x="1604" y="452" class="t9 tb" text-anchor="middle">TB3 — ترمینال ۳×۵mm</text>
+<text x="1550" y="452" class="t9">NO — باز</text><text x="1550" y="488" class="t9">COM — مشترک</text><text x="1550" y="524" class="t9">NC — بسته</text>
+</g>
+
+<g>
+<rect x="1086" y="678" width="120" height="20" rx="6" fill="#b9770e"/>
+<text x="1146" y="692" font-size="9.5" fill="#fff" text-anchor="middle" font-weight="bold">RL4 ← GPIO13</text>
+<path class="w" d="M1206 688 H1240"/><use href="#resH" x="1258" y="688"/><text x="1246" y="676" class="t9">R8 1k</text>
+<path class="w" d="M1276 688 H1294"/><use href="#npn" x="1312" y="688"/><text x="1332" y="706" class="t9">Q4 BC817</text>
+<path class="w" d="M1312 710 V716"/><use href="#gndS" x="1312" y="726"/>
+<path class="w" d="M1312 666 V648 H1360"/>
+<rect x="1360" y="610" width="26" height="38" class="box"/><text x="1373" y="631" class="t9 tb" text-anchor="middle">K4</text>
+<path class="w" d="M1373 610 V602"/>
+<rect x="1352" y="582" width="44" height="20" rx="10" fill="#e67e22"/><text x="1374" y="596" font-size="9.5" fill="#fff" text-anchor="middle" font-weight="bold">+12V</text>
+<path class="w" d="M1386 602 H1450"/><circle cx="1373" cy="602" r="2.6" class="jct"/>
+<use href="#dioV" x="1412" y="627"/><path class="w" d="M1412 602 V617 M1412 637 V648 H1386"/><circle cx="1412" cy="602" r="2.6" class="jct"/>
+<text x="1420" y="632" class="t9">D6 1N4007</text>
+<use href="#resH" transform="translate(1450 618) rotate(90)"/><text x="1462" y="622" class="t9">R12 1k</text>
+<use href="#ledGV" x="1450" y="648"/><path class="w" d="M1450 660 V648 H1360"/><text x="1462" y="652" class="t9">LED4</text>
+<circle cx="1500" cy="624" r="2.6" class="symf"/><circle cx="1500" cy="660" r="2.6" class="symf"/><circle cx="1500" cy="696" r="2.6" class="symf"/>
+<path class="sym" d="M1488 660 L1497 692"/>
+<path class="w" d="M1500 624 H1540 M1500 660 H1540 M1500 696 H1540"/>
+<rect x="1540" y="610" width="128" height="104" class="box" fill="#f3f7ff"/>
+<text x="1604" y="628" class="t9 tb" text-anchor="middle">TB4 — ترمینال ۳×۵mm</text>
+<text x="1550" y="628" class="t9">NO — باز</text><text x="1550" y="664" class="t9">COM — مشترک</text><text x="1550" y="700" class="t9">NC — بسته</text>
+</g>
+
+<!-- ================= SECTION E : RF 433MHz (V2) ================= -->
+<rect x="60" y="790" width="880" height="490" class="sec"/>
+<text x="76" y="816" class="secT">E | لینک رادیویی 433MHz — افزوده V2</text>
+<text x="76" y="836" class="note">گیرنده و فرستنده روی ریل 5V (برد معتبرتر) — DATA گیرنده با تقسیم مقاومتی و DATA فرستنده با شیفتر سطح به منطق 3.3V اداپت شده‌اند.</text>
+
+<!-- Receiver -->
+<rect x="110" y="856" width="220" height="120" class="rfB"/>
+<text x="120" y="880" class="t10 tb">U5 — گیرنده RF 433MHz</text>
+<text x="120" y="898" class="t9">MX-RM-5V / RXB6 (سوپرهتروداین)</text>
+<text x="120" y="914" class="t9">VCC=5V · GND · DATA · ANT</text>
+<path class="w" d="M110 886 H92"/>
+<use href="#ant" x="60" y="886"/>
+<text x="60" y="872" class="t9 tb">ANT ≈ 17.3cm</text>
+<rect x="62" y="922" width="44" height="20" rx="10" fill="#c0392b"/>
+<text x="84" y="936" font-size="9.5" fill="#fff" text-anchor="middle" font-weight="bold">+5V</text>
+<path class="w" d="M106 932 H110"/>
+<path class="w" d="M180 976 V994"/>
+<use href="#gndS" x="180" y="1004"/>
+<path class="w" d="M330 922 H352"/>
+<use href="#resH" x="370" y="922"/>
+<text x="356" y="910" class="t9">R20 10k</text>
+<path class="w" d="M388 922 H410"/>
+<circle cx="410" cy="922" r="2.6" class="jct"/>
+<use href="#resH" transform="translate(410 944) rotate(90)"/>
+<text x="422" y="950" class="t9">R21 18k</text>
+<path class="w" d="M410 922 V926 M410 962 V970"/>
+<use href="#gndS" x="410" y="980"/>
+<rect x="438" y="912" width="130" height="20" rx="6" fill="#1e6e3a"/>
+<text x="503" y="926" font-size="9.5" fill="#fff" text-anchor="middle" font-weight="bold">RF_DATA → GPIO14</text>
+<path class="w" d="M410 922 H438"/>
+<text x="330" y="926" class="pin" text-anchor="end">DATA</text>
+<text x="580" y="920" class="t9">تقسیم 5V→3.2V برای DATA گیرنده</text>
+
+<!-- Transmitter -->
+<rect x="110" y="1040" width="220" height="110" class="rfB"/>
+<text x="120" y="1064" class="t10 tb">U6 — فرستنده RF 433MHz</text>
+<text x="120" y="1082" class="t9">FS1000A (OOK/ASK) — VCC 3.5–12V</text>
+<path class="w" d="M110 1070 H92"/>
+<use href="#ant" x="60" y="1070"/>
+<text x="60" y="1056" class="t9 tb">ANT ≈ 17.3cm</text>
+<rect x="62" y="1100" width="44" height="20" rx="10" fill="#c0392b"/>
+<text x="84" y="1114" font-size="9.5" fill="#fff" text-anchor="middle" font-weight="bold">+5V</text>
+<path class="w" d="M106 1110 H110"/>
+<path class="w" d="M180 1150 V1168"/>
+<use href="#gndS" x="180" y="1178"/>
+<path class="w" d="M330 1118 H370"/>
+<text x="328" y="1112" class="pin" text-anchor="end">DATA</text>
+<circle cx="370" cy="1118" r="2.6" class="jct"/>
+<path class="w" d="M370 1118 V1098"/>
+<use href="#resH" transform="translate(370 1080) rotate(90)"/>
+<text x="382" y="1084" class="t9">R23 10k</text>
+<rect x="352" y="1036" width="44" height="20" rx="10" fill="#c0392b"/>
+<text x="374" y="1050" font-size="9.5" fill="#fff" text-anchor="middle" font-weight="bold">+5V</text>
+<path class="w" d="M370 1118 V1132 H460"/>
+<circle cx="460" cy="1132" r="2.6" class="jct"/>
+<use href="#nmos" x="460" y="1150"/>
+<text x="480" y="1144" class="t9">Q7 2N7002 — شیفتر سطح</text>
+<path class="w" d="M440 1150 H416"/>
+<rect x="372" y="1140" width="44" height="20" rx="10" fill="#d35400"/>
+<text x="394" y="1154" font-size="9.5" fill="#fff" text-anchor="middle" font-weight="bold">3V3</text>
+<text x="430" y="1150" class="pin" text-anchor="end">G</text>
+<text x="474" y="1136" class="pin">D</text>
+<text x="474" y="1190" class="pin">S</text>
+<path class="w" d="M470 1170 V1206 H508"/>
+<rect x="508" y="1196" width="132" height="20" rx="6" fill="#1e6e3a"/>
+<text x="574" y="1210" font-size="9.5" fill="#fff" text-anchor="middle" font-weight="bold">RF_TX ← GPIO16</text>
+<use href="#resH" transform="translate(460 1226) rotate(90)"/>
+<text x="474" y="1232" class="t9">R22 10k</text>
+<rect x="444" y="1254" width="44" height="20" rx="10" fill="#d35400"/>
+<text x="466" y="1268" font-size="9.5" fill="#fff" text-anchor="middle" font-weight="bold">3V3</text>
+<path class="w" d="M466 1244 V1254"/>
+
+<text x="76" y="1028" class="t9 tb">شیفت سطح فرستنده: کلاستیک BSS138 — بدون وارونگی سیگنال؛ نرخ داده تا ~10kbps (مناسب rc-switch)</text>
+<text x="660" y="1064" class="t9">نکته آنتن: λ/4 در 433MHz ≈ 17.3cm سیم</text>
+<text x="660" y="1084" class="t9">یا آنتن فنری 433MHz روی پد ANT</text>
+<text x="660" y="1112" class="t9">· U5 پدها: 5V · GND · GND · DATA</text>
+<text x="660" y="1132" class="t9">· U6 پدها: DATA · 5V · GND</text>
+<text x="76" y="1186" class="t9">· GPIO16 وقفه ندارد ولی برای TX (خروجی ساده) آزاد و مناسب است</text>
+<text x="76" y="1164" class="t9">· چرا GPIO14 برای گیرنده؟ چون تنها پایه آزاد با «وقفه خارجی» است (GPIO0/2/15 پایه‌های بوت‌اند) → سازگار با rc-switch</text>
+
+<!-- ================= NOTES V2 ================= -->
+<rect x="990" y="990" width="690" height="170" class="sec"/>
+<text x="1006" y="1016" class="secT">یادداشت‌ها — V2</text>
+<text x="1006" y="1040" class="t9">• جریان ماژول‌های RF: گیرنده ≈ 5mA و فرستنده ≈ 10–40mA روی ریل 5V — باک MP1584 به‌راحتی جواب می‌دهد.</text>
+<text x="1006" y="1060" class="t9">• حذف GPSR: برای بلندمدت گیرنده سوپرهتروداین (RXB6/RX340) به ازای ماژول ارزان XY-MK-5V انتخاب شود؛ حساسیت −105dBm به‌بالا.</text>
+<text x="1006" y="1080" class="t9">• فاصله آنتن‌ها از باک به‌لحاظ EMI: سوئیچینگ 5V حداقل 10mm از آنتن‌ها دور باشد (راهنمای چیدمان در نمای سه‌بعدی).</text>
+<text x="1006" y="1100" class="t9">• BOM افزوده: U5 (RXB6/MX-RM-5V) ×1 · U6 (FS1000A) ×1 · Q7 2N7002 ×1 · R 10k ×3 (R20,R22,R23) · R 18k ×1 (R21) · آنتن فنری 433MHz ×2</text>
+<text x="1006" y="1120" class="t9">• نگاشت نهایی: RL1..4 ← GPIO4/5/12/13 (سیلک برد واقعی) · RF_RX → GPIO14 · RF_TX → GPIO16</text>
+<text x="1006" y="1140" class="t9">• فریمور نمونه کنترل وب + rc-switch در فایل rf433_demo.ino آمده است.</text>
+</svg>

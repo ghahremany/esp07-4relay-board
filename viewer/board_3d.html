@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>نمای سه‌بعدی واقع‌گرایانه — برد ۴ رله ESP-07 (ECA-22665)</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: Tahoma, Vazirmatn, sans-serif; background: #0d1622; color: #e8edf4; min-height: 100vh; }
+  header { padding: 22px 18px 10px; text-align: center; }
+  h1 { font-size: 1.35rem; color: #ffd479; font-weight: 700; }
+  .sub { color: #8fa5bd; font-size: .83rem; margin-top: 6px; }
+  .panel { background: #16233a; border: 1px solid #26375a; border-radius: 14px; margin: 12px auto; padding: 10px 14px; max-width: 1060px;
+           display: flex; flex-wrap: wrap; align-items: center; gap: 10px 22px; justify-content: center; }
+  .panel label { font-size: .8rem; color: #b9c8dd; display: flex; align-items: center; gap: 7px; cursor: pointer; }
+  select, input[type=range] { accent-color: #ffd479; }
+  select { background: #0e1a2c; color: #ffd479; border: 1px solid #33456b; border-radius: 8px; padding: 6px 10px; font-family: inherit; font-size: .82rem; }
+  button { background: #0e1a2c; color: #e8edf4; border: 1px solid #33456b; border-radius: 8px; padding: 6px 14px; font-family: inherit; font-size: .8rem; cursor: pointer; }
+  button:hover { border-color: #ffd479; }
+  .cb { width: 16px; height: 16px; accent-color: #ffd479; cursor: pointer; }
+  .frame { max-width: 1060px; margin: 4px auto 0; background: #e9edf3; border-radius: 16px; overflow: hidden; position: relative; touch-action: none; }
+  canvas { display: block; width: 100%; cursor: grab; }
+  canvas:active { cursor: grabbing; }
+  #cap { position: absolute; bottom: 10px; right: 10px; left: 10px; pointer-events: none; text-align: center; }
+  #cap span { display: inline-block; background: rgba(13,22,34,.85); color: #ffd479; border-radius: 8px; padding: 5px 16px; font-size: .82rem;
+              opacity: 0; transition: opacity .2s; }
+  #cap span.show { opacity: 1; }
+  .hint { text-align: center; color: #8fa5bd; font-size: .78rem; margin: 10px 0 4px; }
+  .legend { max-width: 1060px; margin: 8px auto 30px; display: flex; flex-wrap: wrap; gap: 8px 20px; justify-content: center; }
+  .chip { display: flex; align-items: center; gap: 7px; background: #16233a; border: 1px solid #26375a; border-radius: 99px; padding: 5px 14px; font-size: .76rem; color: #c7d3e4; }
+  .dot { width: 12px; height: 12px; border-radius: 50%; display: inline-block; border: 1px solid rgba(255,255,255,.25); }
+</style>
+</head>
+<body>
+<header>
+  <h1>برد کنترل ۴ رله ESP-07 — نمای سه‌بعدی وفادار به سخت‌افزار واقعی</h1>
+  <div class="sub">بازسازی از روی عکس‌های رسمی سازنده (iranicboard.ir) • ابعاد ≈ ۷۲×۵۶ میلی‌متر • نگاشت: RL1..4 ← GPIO4/5/12/13</div>
+</header>
+
+<div class="panel">
+  <label>نسخه برد:
+    <select id="ver">
+      <option value="v1">V1 — برد واقعی اصلی</option>
+      <option value="v2" selected>V2 — + گیرنده/فرستنده RF433</option>
+    </select>
+  </label>
+  <label><input type="checkbox" id="rot" class="cb"> چرخش خودکار</label>
+  <label><input type="checkbox" id="lab" class="cb"> برچسب قطعات</label>
+  <label>بزرگ‌نمایی <input type="range" id="zoom" min="40" max="240" value="100"></label>
+  <button id="rst">بازنشانی نما</button>
+</div>
+
+<div class="frame"><canvas id="cv" width="1020" height="620"></canvas><div id="cap"><span id="capt"></span></div></div>
+
+<div class="hint">چرخاندن = کشیدن • زوم = اسکرول / دو انگشت • کلیک روی هر قطعه = نام آن • برد را برگردانید؛ قطعات پشت برد هم مدل شده‌اند</div>
+
+<div class="legend" id="lg"></div>
+
+<script>
+"use strict";
+const cv = document.getElementById('cv');
+const ctx = cv.getContext('2d');
+let yaw = 0.55, pitch = 0.62, zoomF = 1, running = true, ver = 'v2';
+const L = (() => { const v=[0.45,-0.75,0.49], n=Math.hypot(...v); return [v[0]/n,v[1]/n,v[2]/n]; })();
+
+function hex(c){ const n=parseInt(c.slice(1),16); return [n>>16&255, n>>8&255, n&255]; }
+function rot3(p){
+  let [x,y,z]=p;
+  const cy=Math.cos(yaw), sy=Math.sin(yaw);
+  let x1=x*cy+z*sy, z1=-x*sy+z*cy;
+  const cp=Math.cos(pitch), sp=Math.sin(pitch);
+  return [x1, y*cp-z1*sp, y*sp+z1*cp];
+}
+
+/* ---------- mesh builders ---------- */
+function boxMesh(w,h,d,ry=0){
+  const x=w/2,z=d/2, c=Math.cos(ry), s=Math.sin(ry);
+  const rot=v=>[v[0]*c+v[2]*s, v[1], -v[0]*s+v[2]*c];
+  const v=[[-x,0,-z],[x,0,-z],[x,0,z],[-x,0,z],[-x,h,-z],[x,h,-z],[x,h,z],[-x,h,z]].map(rot);
+  const f=[[0,3,2,1],[4,5,6,7],[0,4,7,3],[1,2,6,5],[0,1,5,4],[3,7,6,2]];
+  return {v,f};
+}
+function cylMesh(r,h,n=14){
+  const v=[],f=[];
+  for(let i=0;i<n;i++){const a=i/n*2*Math.PI,c=Math.cos(a)*r,s=Math.sin(a)*r;v.push([c,0,s],[c,h,s]);}
+  const bot=[],top=[];
+  for(let i=0;i<n;i++){bot.push(i*2);top.push(i*2+1);}
+  f.push(bot,top);
+  for(let i=0;i<n;i++){const j=(i+1)%n;f.push([i*2,j*2,j*2+1,i*2+1]);}
+  return {v,f};
+}
+/* part: {mesh, pos:[x,boardY,z], col, lb?, ax?} — pos y = base height on board top (0=top, +up); mesh built with base at y=0 */
+function B(w,h,d,at,col,lb,ry=0){ return {mesh:boxMesh(w,h,d,ry), pos:at, col:hex(col), lb:lb||null}; }
+function C(r,h,at,col,lb){ return {mesh:cylMesh(r,h), pos:at, col:hex(col), lb:lb||null}; }
+
+/* ---------- board layout (mm, measured from iranicboard.ir photos; origin = board center) ---------- */
+function buildParts(v){
+  const v2 = v==='v2';
+  const BD = v2 ? 66 : 56;                 // depth (z); V2 extends +z 10mm
+  const zMax = BD/2, zMin = -28;
+  const P = [];
+
+  /* PCB: top at y=0, thickness 1.6 */
+  P.push(B(72, 1.6, BD, [0, 0, (zMin+zMax)/2], '#117c3d'));
+  { // board center shift so top of box = 0: boxMesh spans y -h..0 → base of part = board top → put board itself with base at -1.6
+    const b=P[0]; b.pos=[0,-1.6,(zMin+zMax)/2];
+    P[0]=B(72,1.6,BD,b.pos,'#159a48','فیبر PCB ‏۷۲×'+(v2?'۶۶':'۵۶'));
+  }
+
+  /* corner standoffs (nylon) */
+  for (const [x,z] of [[-34,-26],[34,-26],[-34,26],[34,26]]) {
+    P.push(C(2.6,1.15,[x,0,z],'#e9e6da', x<0&&z<0?'سوراخ مونتاژ نایلونی ×۴':null));
+    P.push(C(1.2,1.25,[x,0,z],'#556'));
+  }
+  /* V2 corner pair on extension */
+  if (v2) for (const [x,z] of [[-34,36],[34,36]]) { P.push(C(2.6,1.15,[x,0,z],'#e9e6da')); P.push(C(1.2,1.25,[x,0,z],'#556')); }
+
+  const relX=[-22.9,-6.8,9.0,24.8], relZ=-10.8;
+  /* screw terminals (blue KF301-3P ×4, leaning off top edge) */
+  relX.forEach((x,i)=>{
+    const z=-25.3;
+    P.push(B(15.5,13,10,[x,0,z],'#1d6fd8', i===0?'ترمینال پیچی ۳‌پین (COM/NO/NC) ×۴':null));
+    for(const dx of [-5,0,5]){
+      P.push(C(1.9,0.99,[x+dx,13,z],'#cfd4da'));            // screw heads
+      P.push(B(2.6,0.25,0.6,[x+dx,13.95,z],'#5a6068'));     // screw slot
+      P.push(B(2.4,2.6,0.4,[x+dx,2.4,z-5.15],'#0b3a75'));   // wire hole on front face
+    }
+  });
+  /* relays (cream SRD-S-112D2-F-C1 ×4) */
+  relX.forEach((x,i)=>{
+    P.push(B(15.5,15,19.2,[x,0,relZ],'#e8e2c9', i===0?'رله SANYOU SRD-S-112D2-F-C1 ‏۱۲V‏/T73':null));
+    P.push(B(15.9,0.7,19.6,[x,0,relZ],'#d5cdb2'));                    // base lip
+    P.push(C(0.7,0.18,[x+5.6,15,relZ+7.2],'#9c947c'));                // mold dimple
+    P.push(B(1.4,4,0.5,[x-7.75+0.2,0,relZ],'#cfc8ac'));               // side rib L
+    P.push(B(0.5,4,1.4,[x,0,relZ+9.6-0.2],'#cfc8ac'));
+  });
+  /* relay silk outlines (top view: white rect around each relay) */
+  relX.forEach(x=>{
+    const y=0.02,w=17,d=21.5;
+    for(const [dx,dz,sw,sd] of [[0,-d/2,w,0.28],[0,d/2,w,0.28],[-w/2,0,0.28,d],[w/2,0,0.28,d]])
+      P.push(B(sw,0.05,sd,[x+dx,y,relZ+dz],'#dfe6ea'));
+  });
+  /* channel LEDs + LED silk boxes */
+  const ledX=[-27.4,-11.6,4.9,20.7];
+  ledX.forEach((x,i)=>{
+    P.push(B(4.6,0.06,2.6,[x,0.0,1.0],'#edeff2'));
+    P.push(B(3.2,1.1,1.6,[x,0.06,1.0],'#2fd65f', i===0?'LED وضعیت کانال ۱ تا ۴ (زیر هر رله)':null));
+  });
+  /* لوگو ایرانیک — نماد انتزاعی زیگزاگ */
+  P.push(B(11,0.05,0.8,[4,0.02,3.4],'#e4eaee',null,0.5));
+  P.push(B(11,0.05,0.8,[4,0.02,1.6],'#e4eaee',null,-0.5));
+  P.push(B(4,0.05,0.8,[9.6,0.02,2.6],'#e4eaee',null,0.85));
+  P.push(B(4,0.05,0.8,[-1.6,0.02,2.6],'#e4eaee',null,-0.85));
+
+  /* tactile buttons on left edge (RESET / FLASH) */
+  [[-16.1],[ -6.7]].forEach(([z],i)=>{
+    P.push(B(3.2,2,4.2,[-34.0,0,z],'#e5e7ea', i===0?'کلید SMD (بالایی RESET — پایینی GPIO0/FLASH)':null));
+    P.push(B(1.6,0.8,2.0,[-34.0,2,z],'#b9bec7'));
+  });
+
+  /* WiFi silk logo */
+  P.push(C(2.3,0.05,[-31.4,0.02,3.0],'#e7ecf0'));
+  P.push(B(2.2,0.05,1.0,[-30.2,0.02,3.0],'#e7ecf0'));
+  P.push(B(1.0,0.05,2.2,[-31.4,0.02,4.2],'#e7ecf0'));
+  /* IoT cloud silk */
+  P.push(C(2.0,0.05,[-23.7,0.02,24.5],'#e7ecf0','لوگوی سیلک WiFi / IoT'));
+  P.push(C(1.4,0.05,[-21.9,0.02,25.2],'#e7ecf0'));
+  P.push(C(1.3,0.05,[-25.5,0.02,25.2],'#e7ecf0'));
+
+  /* micro USB on left edge */
+  P.push(B(7.6,3.2,5.6,[-34.6,0,11.2],'#c9cfd8','پورت Micro USB (تغذیه/پروگرام)'));
+  P.push(B(1.2,2.0,3.6,[-38.2,0.6,11.2],'#20242a'));
+  P.push(B(7.8,0.5,5.8,[-34.6,3.1,11.2],'#aeb5c0'));
+
+  /* yellow LED next to USB */
+  P.push(B(2.0,1.25,1.1,[-33.8,0,18.7],'#ffd84d','LED زرد (فعالیت USB)'));
+
+  /* crystal HC-49 (upright capsule, long axis along z) */
+  P.push(B(4.5,3.8,11.5,[-18.3,0,12.1],'#b9c3cf','کریستال ۱۲MHz ‏(HC-49US) برای CH340G'));
+  P.push(B(4.7,0.4,11.7,[-18.3,3.7,12.1],'#d5dbe3'));
+  for(const z of [8.0,16.2]) P.push(C(0.5,0.06,[-18.3,0.02,z],'#eef2f5')); // silk pad dots
+
+  /* ---- ESP-07 module ---- */
+  const mx=-6.6, mz=16.7;
+  P.push(B(16,1.0,20,[mx,0,mz],'#1d4f9e','ماژول ESP-07 ‏(ESP8266MOD‏، فلش ۱MB، شیلد فلزی، آنتن سرامیکی + U.FL)'));
+  P.push(B(14,1.35,17,[mx,1.0,mz-0.6],'#3a3d45'));
+  P.push(B(13.4,0.06,3.2,[mx,2.35,mz-7.6],'#4b4e57'));        // antenna keep-out print strip on shield
+  P.push(B(4.6,1.5,2.6,[-12.9,1.0,25.3],'#f0eee6'));          // ceramic antenna
+  P.push(C(1.6,1.7,[0.0,1.0,24.0],'#c9a44c','کانکتور U.FL (آنتن خارجی)'));
+  P.push(C(0.7,1.78,[0.0,1.0,24.0],'#7d6428'));
+  P.push(B(3.2,2.4,2.2,[-9.5,1.0,25.4],'#e8e9ec'));           // white connector under module
+  P.push(B(1.2,0.6,1.0,[-9.5,2.2,25.4],'#565a62'));
+  P.push(B(2.5,0.9,3.5,[-13.2,1.0,8.2],'#ccd2db'));           // 26MHz can on module
+  /* castellated pads: gold strips at module edges */
+  for(let i=0;i<8;i++){
+    P.push(B(1.1,0.2,1.05,[-14.6,0.16,8.2+i*2],'#c9a44c', i===0?'کاستلیشن ESP-07 (گام ۲mm ×۱۶)':null));
+    P.push(B(1.1,0.2,1.05,[  1.4,0.16,8.2+i*2],'#c9a44c'));
+  }
+  /* breakout pads GND..TXD / RST..3V3 flanking module */
+  for(let i=0;i<8;i++){
+    P.push(B(1.7,0.15,1.05,[-16.9,0.05,8.2+i*2],'#d8b452', i===0?'پدهای بریک‌اوت: GND,D15,D2,D0,D4,D5,RXD,TXD':null));
+    P.push(B(1.7,0.15,1.05,[  3.7,0.05,8.2+i*2],'#d8b452', i===0?'پدهای بریک‌اوت: RST,ADC,CH_PD,D16,D14,D12,D13,3V3':null));
+  }
+
+  /* ---- power cluster (right) ---- */
+  P.push(B(9.5,0.06,9.0,[14.7,0.02,6.3],'#e7ecf0'));                       // silk rect under inductor
+  P.push(C(4.3,7.5,[14.7,0.0,6.3],'#2b2b30','سلف درام‌کور ۱۰۰µH ‏(مارک 101)'));
+  P.push(C(3.9,0.4,[14.7,7.5,6.3],'#45454c'));
+  P.push(C(4.55,0.35,[14.7,0.05,6.3],'#565660'));
+  P.push(B(11.5,0.06,11.5,[22.7,0.02,9.7],'#e7ecf0'));
+  P.push(C(5,13,[22.7,0.0,9.7],'#23262c','خازن باک ۱۰۰۰µF/16V ×۲'));
+  P.push(C(5,0.7,[22.7,13,9.7],'#c8ccd2'));
+  P.push(B(9,0.03,0.5,[22.7,13.7,9.7],'#8b9098',null,0.8));
+  P.push(C(5,13,[15.4,0.0,22.3],'#23262c'));
+  P.push(C(5,0.7,[15.4,13,22.3],'#c8ccd2'));
+  P.push(B(9,0.03,0.5,[15.4,13.7,22.3],'#8b9098',null,-0.8));
+  /* DC power jack (black, hole facing front) */
+  P.push(B(9,11,14,[23.4,0,23.0],'#1b1e24','جک تغذیه ۱۲V ‏(DC-005 ‏۵٫۵×۲٫۱)'));
+  P.push(B(5.4,5.4,0.8,[23.4,2.6,29.85],'#07090c'));
+  P.push(B(1.2,1.2,1.2,[23.4,4.7,29.6],'#c9a44c'));
+  P.push(B(2.0,1.4,3.0,[23.4,11,20.0],'#c9cfd8'));                           // jack rear pin
+  /* right-edge board name silk (vertical strip suggesting text) */
+  P.push(B(0.5,0.05,16,[33.6,0.02,-4],'#dfe6ea'));
+
+  /* ---- bottom side (visible when flipped) ---- */
+  const by = -1.6;
+  P.push(B(9.9,1.5,5.3,[-26,by-1.5,14],'#262a31','CH340G ‏(پشت برد، زیر ناحیه USB)'));
+  P.push(B(10,4.5,6.6,[16.5,by-4.5,-1],'#262a31','رگولاتور باک ۵V ‏(LM2576 ‏D2PAK — پشت برد)'));
+  P.push(B(4.5,0.8,6.6,[23.4,by-4.0,-1],'#b9c3cf'));
+  P.push(B(7.3,2.8,4.3,[10,by-2.8,-5],'#e0b83c','تانتالوم ۴۷۰µF/16V ‏(پشت برد)'));
+  P.push(B(1.0,2.6,4.3,[6.1,by-2.8,-5],'#c8ccd2'));
+  relX.forEach((x,i)=>{
+    P.push(B(2.9,1.1,1.7,[x-3,by-1.1,-14],'#1d2026', i===0?'درایورهای کانال روی پشت برد: SOT-23 NPN + مقاومت بیس + دیود فلای‌بک شیشه‌ای':null));
+    P.push(B(2.0,0.6,1.25,[x,by-0.6,-14],'#4a3b2a'));
+    P.push(B(2.6,1.1,1.3,[x+3,by-1.1,-14],'#c4552a'));
+  });
+  for(const [x,z] of [[-20,20],[-8,-2],[6,18]]) P.push(B(2.0,0.6,1.25,[x,by-0.6,z],'#3a3f47'));
+  /* AMS1117 bottom */
+  P.push(B(6.5,1.6,3.5,[4,by-1.6,13],'#2a2e35'));
+  P.push(B(2.6,1.4,3.8,[8.4,by-1.4,13],'#b9c3cf'));
+
+  /* ---- V2 additions ---- */
+  if (v2) {
+    P.push(B(71.6,0.06,0.5,[0,0.02,28],'#dfe6ea'));
+    P.push(B(30,4.5,12,[-19,0,33],'#0c5c2e','گیرنده RF433 ‏(MX-RM-5V) → GPIO14'));
+    P.push(B(3,1.5,3,[-26.5,4.5,36.2],'#c9cfd8'));
+    P.push(B(1.6,2.6,6.4,[-14,4.5,32],'#202830'));
+    for(let i=0;i<4;i++) P.push(B(1.2,0.2,1.2,[-31+i*2.2,4.55,28.6],'#c9a44c'));
+    P.push(C(1.4,0.2,[-5.6,4.55,36.5],'#c9a44c','پد آنتن گیرنده — سیم ۱۷٫۳cm'));
+    P.push(B(19,4.5,19,[8,0,33.5],'#12572f','فرستنده RF433 ‏(FS1000A) ← GPIO16'));
+    P.push(B(3,2.6,3.2,[1.2,4.5,37.6],'#c9cfd8'));
+    P.push(B(6,1.6,4,[10,4.5,31],'#202830'));
+    for(let i=0;i<3;i++) P.push(B(1.2,0.2,1.2,[2.2+i*2.2,4.55,25.6],'#c9a44c'));
+    P.push(C(1.1,3.2,[15.8,4.5,38.0],'#c9a44c'));
+    P.push(C(1.1,0.9,[15.8,7.7,38.0],'#c9a44c','فنر آنتن ۴۳۳MHz فرستنده'));
+    P.push(C(1.1,0.9,[15.8,9.0,38.0],'#c9a44c'));
+    P.push(C(1.1,0.9,[15.8,10.3,38.0],'#c9a44c'));
+    P.push(B(1.6,1.0,1.0,[-6,0,26.4],'#1d2026'));      // 2N7002
+    P.push(B(2.0,0.6,1.25,[-3.4,0,26.4],'#4a3b2a'));
+    P.push(B(2.0,0.6,1.25,[-0.8,0,26.4],'#3a3f47'));
+  }
+  return P;
+}
+
+/* ---------- rendering ---------- */
+let parts=[], anchors=[];
+function rebuild(){ parts = buildParts(ver); anchors = parts.filter(p=>p.lb).map(p=>({lb:p.lb, p:p.pos, py:p.pos[1]})); }
+
+function frame(){
+  const W=cv.width,H=cv.height;
+  ctx.fillStyle='#e9edf3'; ctx.fillRect(0,0,W,H);
+  /* scene bounding box (board + tallest parts) rotated → autofit */
+  const zm = ver==='v2' ? 39 : 29;
+  const pts=[];
+  for(const x of [-40,40]) for(const y of [-2.5,16.5]) for(const z of [-29,zm]) pts.push([x,y,z]);
+  const rp=pts.map(rot3);
+  let mnx=1e9,mxx=-1e9,mny=1e9,mxy=-1e9;
+  for(const c of rp){ mnx=Math.min(mnx,c[0]); mxx=Math.max(mxx,c[0]); mny=Math.min(mny,c[1]); mxy=Math.max(mxy,c[1]); }
+  const bw=mxx-mnx, bh=mxy-mny;
+  const sc0=Math.min((W*0.97)/bw,(H*0.94)/bh)*zoomF;
+  const cx0=(mnx+mxx)/2, cy0=(mny+mxy)/2;
+  const proj=t=>{ const k=1/(1-t[2]*0.0028); return [ W/2+(t[0]-cx0)*sc0*k, H/2-(t[1]-cy0)*sc0*k ]; };
+
+  /* ground shadow */
+  const g0=proj(rot3([0,-2.2,(zm-29)/2]));
+  ctx.save();
+  ctx.translate(g0[0], g0[1]+bw*sc0*0.02);
+  ctx.scale(bw*sc0*0.52, bw*sc0*0.15);
+  const g=ctx.createRadialGradient(0,0,0.55,0,0,1);
+  g.addColorStop(0,'rgba(30,40,55,0.30)'); g.addColorStop(1,'rgba(30,40,55,0)');
+  ctx.fillStyle=g; ctx.beginPath(); ctx.arc(0,0,1,0,7); ctx.fill();
+  ctx.restore();
+
+  /* collect faces */
+  const topView = Math.sin(pitch) > 0;
+  const faces=[];
+  for(const p of parts){
+    const py = p.pos[1];
+    if (topView && py < -1.61) continue;      // bottom-side parts
+    if (!topView && py > -1.59 && p !== parts[0]) continue;  // top-side parts
+    const m=p.mesh;
+    const tv=[];
+    for(const v of m.v){ const q=rot3([v[0]+p.pos[0], v[1]+p.pos[1], v[2]+p.pos[2]]); tv.push(q); }
+    for(const f of m.f){
+      const a=tv[f[0]],b=tv[f[1]],c=tv[f[2]];
+      const u=[b[0]-a[0],b[1]-a[1],b[2]-a[2]], w=[c[0]-b[0],c[1]-b[1],c[2]-b[2]];
+      const n=[u[1]*w[2]-u[2]*w[1], u[2]*w[0]-u[0]*w[2], u[0]*w[1]-u[1]*w[0]];
+      const nn=Math.hypot(...n)||1; const nx=n[0]/nn,ny=n[1]/nn,nz=n[2]/nn;
+      let zsum=0; for(const i of f) zsum+=tv[i][2];
+      const li=Math.max(0, nx*L[0]+ny*L[1]-nz*L[2]);
+      const s=0.45+0.55*Math.min(1,li*1.15+0.15);
+      faces.push({
+        z: zsum/f.length,
+        col:'rgb('+Math.round(Math.min(255,p.col[0]*s+18))+','+Math.round(Math.min(255,p.col[1]*s+18))+','+Math.round(Math.min(255,p.col[2]*s+18))+')',
+        pts: f.map(i=>proj(tv[i]))
+      });
+    }
+  }
+  faces.sort((a,b)=>a.z-b.z);
+  ctx.lineWidth=0.6; ctx.strokeStyle='rgba(8,14,22,.22)';
+  for(const f of faces){
+    ctx.beginPath(); ctx.moveTo(f.pts[0][0],f.pts[0][1]);
+    for(let i=1;i<f.pts.length;i++) ctx.lineTo(f.pts[i][0],f.pts[i][1]);
+    ctx.closePath(); ctx.fillStyle=f.col; ctx.fill(); ctx.stroke();
+  }
+
+  /* anchors projected for labels & picking */
+  const scrAnch = anchors.map(a=>{
+    const q=rot3(a.p); const s=proj(q); return {lb:a.lb, x:s[0], y:s[1], behind:q[2]>2};
+  });
+
+  if (document.getElementById('lab').checked){
+    ctx.font='11px Tahoma, Arial'; ctx.textAlign='center';
+    const drawn=[];
+    for(const a of scrAnch.filter(a=>!a.behind && (topView ? a.py >= -1.6 : a.py < -1.6))){
+      let y=a.y-8;
+      for(const d of drawn){ if(Math.abs(d.y-y)<13 && Math.abs(d.x-a.x)<70) y=d.y-13; }
+      drawn.push({x:a.x,y});
+      const tw=ctx.measureText(a.lb).width+12;
+      ctx.beginPath(); ctx.arc(a.x,a.y,2.2,0,7); ctx.fillStyle='#1d4ed8'; ctx.fill();
+      ctx.strokeStyle='rgba(29,78,216,.5)'; ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(a.x,y+9); ctx.stroke();
+      ctx.fillStyle='rgba(13,22,34,.88)'; ctx.beginPath();
+      ctx.roundRect ? ctx.roundRect(a.x-tw/2,y-11,tw,15,5) : ctx.rect(a.x-tw/2,y-11,tw,15);
+      ctx.fill();
+      ctx.fillStyle='#fff'; ctx.fillText(a.lb, a.x, y);
+    }
+  }
+  return scrAnch;
+}
+let scrAnch=[];
+function render(){ scrAnch = frame(); }
+
+/* ---------- interaction ---------- */
+let drag=false, lx=0, ly=0, moved=0;
+const ptrs=new Map();
+cv.addEventListener('pointerdown',e=>{ cv.setPointerCapture(e.pointerId); ptrs.set(e.pointerId,[e.clientX,e.clientY]); if(ptrs.size===1){drag=true;lx=e.clientX;ly=e.clientY;moved=0;} });
+cv.addEventListener('pointermove',e=>{
+  if(!ptrs.has(e.pointerId)) return;
+  ptrs.set(e.pointerId,[e.clientX,e.clientY]);
+  if(ptrs.size===2){
+    const [a,b]=[...ptrs.values()];
+    const d=Math.hypot(a[0]-b[0],a[1]-b[1]);
+    if(cv._pd){ zoomF=Math.max(0.4,Math.min(2.4,zoomF*d/cv._pd)); render(); }
+    cv._pd=d; return;
+  }
+  if(!drag) return;
+  moved+=Math.abs(e.clientX-lx)+Math.abs(e.clientY-ly);
+  yaw  += (e.clientX-lx)*0.008;
+  pitch = Math.max(-1.35, Math.min(1.5, pitch + (e.clientY-ly)*0.008));
+  lx=e.clientX; ly=e.clientY; render();
+});
+function up(e){
+  ptrs.delete(e.pointerId); cv._pd=null;
+  if(ptrs.size<2) cv._pd=null;
+  if(drag && moved<8){ // click → identify
+    const r=cv.getBoundingClientRect();
+    const x=(e.clientX-r.left)*cv.width/r.width, y=(e.clientY-r.top)*cv.height/r.height;
+    let best=null,bd=1e9;
+    const tv=Math.sin(pitch)>0;
+    for(const a of scrAnch){ if(a.behind) continue; if(tv ? a.py < -1.6 : a.py >= -1.6) continue; const d=Math.hypot(a.x-x,a.y-y); if(d<bd){bd=d;best=a;} }
+    const cap=document.getElementById('capt');
+    if(best && bd<40){ cap.textContent=best.lb; cap.classList.add('show'); }
+    else cap.classList.remove('show');
+  }
+  drag=false;
+}
+cv.addEventListener('pointerup',up);
+cv.addEventListener('pointercancel',up);
+cv.addEventListener('wheel',e=>{ e.preventDefault(); zoomF=Math.max(0.4,Math.min(2.4,zoomF*(e.deltaY>0?0.9:1.1))); render(); },{passive:false});
+cv.addEventListener('dblclick',()=>{ reset(); });
+
+function reset(){ yaw=0.55; pitch=0.62; zoomF=1; document.getElementById('zoom').value=100; render(); }
+document.getElementById('rst').onclick=reset;
+document.getElementById('zoom').oninput=e=>{ zoomF=e.target.value/100; render(); };
+document.getElementById('lab').onchange=render;
+document.getElementById('ver').onchange=e=>{ ver=e.target.value; rebuild(); render(); };
+document.getElementById('rot').onchange=e=>{ running=e.target.checked; if(running) requestAnimationFrame(tick); };
+
+function tick(){ if(running){ yaw+=0.006; render(); requestAnimationFrame(tick);} }
+
+/* legend */
+document.getElementById('lg').innerHTML = [
+  ['#117c3d','فیبر PCB'],['#e8e2c9','رله SRD ۱۲V'],['#1d6fd8','ترمینال خروجی'],['#1d4f9e','ماژول ESP-07'],
+  ['#c9cfd8','USB / کریستال / U.FL'],['#23262c','جک ۱۲V + خازن‌ها'],['#2b2b30','سلف باک ۱۰۰µH'],
+  ['#2fd65f','LED کانال‌ها'],['#0c5c2e','ماژول RF433 (در V2)']
+].map(([c,t])=>'<span class="chip"><span class="dot" style="background:'+c+'"></span>'+t+'</span>').join('');
+
+rebuild(); render(); running=false;
+</script>
+</body>
+</html>

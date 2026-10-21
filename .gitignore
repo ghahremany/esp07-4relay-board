@@ -1,0 +1,14 @@
+# KiCad backups / temp
+*-backup
+*.kicad_pcb-bak
+*.kicad_sch-bak
+*-backups/
+fp-info-cache
+*.gblcache
+*.net
+fp-lib-table
+sym-lib-table
+# builds
+gerbers/
+__pycache__/
+.DS_Store
