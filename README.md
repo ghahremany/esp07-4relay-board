@@ -20,6 +20,8 @@
 | `firmware/pin_finder.ino` | اسکچ راستی‌آزمایی نگاشت رله‌ها |
 | `firmware/rf433_demo.ino` | فریمور V2: وب‌سرور کنترل رله + rc-switch روی GPIO14/16 |
 | `tools/gen_kicad.py` | تولیدکننده PCB (پایتون) — موقعیت‌ها و نت‌ها در قالب کد |
+| `tasmota/` | تمپلیت‌های آماده Tasmota برای V1 و V2 (با RF) |
+| `docs/TASMOTA.md` | تحلیل Tasmota: چه چیزهایی‌اش برای این بردها به درد می‌خورد + دستورهای آماده |
 
 ## 🔑 نگاشت تأییدشده از سیلک برد
 
@@ -55,6 +57,9 @@ void setup(){ for(auto p:RELAY){ pinMode(p,OUTPUT); digitalWrite(p,LOW);} }
 - چیدمان فوتپرینت‌ها **مطابق عکس برد واقعی** است؛ نت‌لیست کامل روی پدها نشسته و نت‌های اصلی تغذیه و ۴ کانال رله + زنجیره RF روتر شده‌اند؛ GND زون دوطرفه دارد.
 - فوتپرینت‌های سفارشی (با پسوند `hack_`/نام‌های محلی) در فایل جاسازی شده‌اند؛ برای تولید Gerber آن‌ها را با فوتپرینت‌های کتابخانه‌ای KiCad جایگزین/به‌روز کنید (**Design → Update Footprints**) و باقی airwireها را کامل روتر کنید.
 - پدپترن رله، فوتپرینت **رسمی KiCad** برای خانواده SANYOU SRD (`Relay_SPDT_SANYOU_SRD_Series_Form_C`) است — امن است.
+
+## 🔗 ریپوی خواهر
+[Esp32 IX4 Relay Board](https://github.com/ghahremany/esp32-4relay-board) — نسخه ESP32 همین برد از ایرانیک: شماتیک، سه‌بعدی، مرجع WROOM-32 و تمپلیت Tasmota.
 
 ## ⚠️ هشدار ایمنی
 
