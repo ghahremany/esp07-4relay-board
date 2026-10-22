@@ -7,6 +7,14 @@
 - ⚙ **صفحهٔ تنظیمات سامانهٔ نگهبان‌یار**: نام مجتمع/Building ID، نام‌های رله، وبهوک رویداد رله، Interlock، و چرخش کلید API
 - 📲 **API بومی برای اپ نگهبان‌یار**: هر فرمان رله با امضای HMAC-SHA1 (کلید متقارن ۲۰بایتی روی دستگاه) و timestamp ضدبازپخش — قرارداد کامل در `docs/API.md`
 
+## پیش‌نمایش پنل (رندر دقیق کد درایور)
+
+| راه‌اندازی (QR آفلاین) | ورود TOTP گوگل | داشبورد | تنظیمات |
+|---|---|---|---|
+| ![setup](docs/screenshots/screenshot_01_setup.png) | ![login](docs/screenshots/screenshot_02_login.png) | ![dashboard](docs/screenshots/screenshot_03_dashboard.png) | ![config](docs/screenshots/screenshot_04_config.png) |
+
+راهنمای کامل هر صفحه + HTML پیش‌نمایش زنده: **[docs/PANEL.md](docs/PANEL.md)**
+
 ## ساختار پوشه
 
 ```
@@ -17,6 +25,8 @@ tasmota-negahbanyar/
 │   └── qrjs_ngh.h               ← کتابخانه QR آفلاین داخل فلش (فایل تولیدشدهٔ خودکار)
 ├── assets/qrcode.min.js         ← منبع کتابخانه QR (davidshimjs/qrcodejs, MIT)
 ├── docs/API.md                  ← قرارداد کامل API برای توسعهٔ اپ (شبه‌کد Kotlin + نمونه curl)
+├── docs/PANEL.md                ← راهنمای تصویری پنل (اسکرین‌شات + توضیح هر صفحه)
+├── docs/screenshots/            ← اسکرین‌شات‌ها + پیش‌نمایش‌های HTML زندهٔ صفحات
 ├── tools/apply_theme.sh         ← بازنقش‌سازی ظاهر صفحات مركزی Tasmota به تم نگهبان‌یار
 ├── tools/gen_secret.py          ← تولید کلید TOTP قوی + otpauth URI (اجرا روی کامپیوتر)
 └── tests/test_hmac_totp.py      ← راستی‌آزمایی بردارهای RFC 6238 با همان الگوریتم کد C دستگاه
